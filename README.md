@@ -7,7 +7,6 @@
 ### The advantages of NILM:
 
 - **Energy Conservation and Efficiency**: By identifying and tracking the energy usage of individual appliances, NILM helps in promoting energy-saving behaviors and enhancing overall energy efficiency.
-- **Smart Grid Compatibility**: It is particularly relevant in the context of smart grids, where detailed information about energy usage is valuable for both consumers and utility providers for managing demand, optimizing energy distribution, and reducing costs.
 - **Consumer Insight**: For consumers, NILM provides insights into their energy consumption patterns, enabling them to make informed decisions about reducing their energy use and cost.
 - **Fault Detection and Maintenance**: NILM can also be used for predictive maintenance and fault detection in appliances by identifying unusual patterns in energy consumption that may indicate a malfunction.
 
@@ -18,3 +17,8 @@
 - **Improved Accuracy**: The sophisticated architectures of deep learning, such as convolutional neural networks (CNNs) or recurrent neural networks (RNNs), transformers,provide higher accuracy in NILM tasks. They are better at capturing temporal dependencies and spatial patterns in power usage data.
 
 - **Integration with Other Smart Systems**: Deep learning models can be integrated more seamlessly with other AI-based smart systems in homes and grids, facilitating a more interconnected and intelligent energy management ecosystem.
+## My current progress includes: 
+
+**Research based on closed-loop learning**
+- We propose a closed-loop learning method for NILM, which utilizes a feedback mechanism to minimize estimation errors. This method comprises a feedforward network tasked with converting aggregated power data into individual load powers as accurately as possible, and a feedback network. The feedback network is designed to balance operating states and leverage the temporal-spatial correlations among different loads. It generates a feedback loss that is instrumental in enhancing the accuracy of the feedforward network.(see detailed in https://ieeexplore.ieee.org/document/10225311)
+- ![closed-loop](https://github.com/lvliheng007/lvliheng/blob/main/Figure2.pdf)
