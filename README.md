@@ -23,3 +23,6 @@
 - We propose a closed-loop learning method for NILM, which utilizes a feedback mechanism to minimize estimation errors. This method comprises a feedforward network tasked with converting aggregated power data into individual load powers as accurately as possible, and a feedback network. The feedback network is designed to balance operating states and leverage the temporal-spatial correlations among different loads. It generates a feedback loss that is instrumental in enhancing the accuracy of the feedforward network.(see detailed in https://ieeexplore.ieee.org/document/10225311)
 - ![closed-loop](https://github.com/lvliheng007/lvliheng/blob/main/Figure2.pdf)
 <div align="center"> <img src="https://github-readme-stats.vercel.app/api?username=lvliheng007&show_icons=true&theme=tokyonight" /> </div>
+<div align="center"> <img src="https://github-readme-streak-stats.herokuapp.com/?user=lvliheng007" /> </div>
+<div align="center"> <img src="https://github-readme-activity-graph.vercel.app/graph?username=lvliheng007&theme=xcode" /> </div>
+
