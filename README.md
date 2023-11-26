@@ -1,7 +1,10 @@
 # I am a postgraduate student and my research focuses on deep learning-based non-intrusive load monitoring (NILM), so welcome to discuss with me!
 
 <div align="center"> <img src="https://github-readme-streak-stats.herokuapp.com/?user=lvliheng007" /> </div>
-<div align="center"> <img src="https://github-readme-activity-graph.vercel.app/graph?username=lvliheng007&theme=xcode" /> </div>
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
 ## What is NILM?
 
 - NILM, also known as load disaggregation, is a method used to analyze changes in the power going into a building and infer what loads are being used within that building, as well as their individual energy consumption. It operates without needing to install individual sensors on each load, hence the term "non-intrusive.
