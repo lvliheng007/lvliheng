@@ -1,4 +1,4 @@
-# I am a postgraduate student and my research focuses on deep learning-based non-intrusive load monitoring (NILM), so welcome to discuss with me!
+# A pipeline focuses on deep learning-based non-intrusive load monitoring (NILM), so welcome to discuss it with me!
 
 <div align="center"> <img src="https://github-readme-streak-stats.herokuapp.com/?user=lvliheng007" /> </div>
 
