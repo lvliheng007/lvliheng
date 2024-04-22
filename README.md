@@ -7,7 +7,7 @@
 
 ## What is NILM?
 
-- NILM, also known as load disaggregation, is a method used to analyze changes in the power going into a building and infer what loads are being used within that building, as well as their individual energy consumption. It operates without needing to install individual sensors on each load, hence the term "non-intrusive.
+- NILM, also known as load disaggregation, is a technique used to analyze changes in the power going into a building and infer what loads are being used within that building, as well as their individual energy consumption. It operates without needing to install individual sensors on each load, hence the term "non-intrusive.
 
 ### The advantages of NILM:
 
@@ -15,11 +15,11 @@
 - **Consumer Insight**: For consumers, NILM provides insights into their energy consumption patterns, enabling them to make informed decisions about reducing their energy use and cost.
 - **Fault Detection and Maintenance**: NILM can also be used for predictive maintenance and fault detection in appliances by identifying unusual patterns in energy consumption that may indicate a malfunction.
 
-## Why use deep learning based methods?
+## Why use deep learning-based methods?
 
 - **Enhanced Pattern Recognition**: Deep learning excels in identifying complex, nonlinear patterns for multi-state loads. This capability is crucial for accurately disaggregating aggregated energy data into load-level usage, which is often challenging for traditional methods.
 
-- **Improved Accuracy**: The sophisticated architectures of deep learning, such as convolutional neural networks (CNNs) or recurrent neural networks (RNNs), transformers,provide higher accuracy in NILM tasks. They are better at capturing temporal dependencies and spatial patterns in power usage data.
+- **Improved Accuracy**: The sophisticated architectures of deep learning, such as convolutional neural networks (CNNs) or recurrent neural networks (RNNs), transformers, provide higher accuracy in NILM tasks. They are better at capturing temporal dependencies and spatial patterns in power usage data.
 
 - **Integration with Other Smart Systems**: Deep learning models can be integrated more seamlessly with other AI-based smart systems in homes and grids, facilitating a more interconnected and intelligent energy management ecosystem.
 ## My current progress includes: 
