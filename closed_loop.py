@@ -4,7 +4,7 @@ import os
 import time
 
 from sklearn.model_selection import train_test_split
-from data_processing2 import load_data
+from data_processing import load_data
 
 import torch.utils.data as tud
 from torch.utils.data.dataset import TensorDataset
@@ -36,35 +36,25 @@ USE_CUDA = torch.cuda.is_available()
 cuda = True if torch.cuda.is_available() else False
 
 # the structure of the Generator
+
 class Generator(nn.Module):
-
-
-
-    def  __init__(self, mains_length,appliance_length):
-        # Refer to "ZHANG C, ZHONG M, WANG Z, et al. Sequence-to-point learning with neural networks for non-intrusive load monitoring[C].The 32nd AAAI Conference on Artificial Intelligence"
+    def __init__(self, mains_length, appliance_length, num_meters):
         super(Generator, self).__init__()
         self.seq_length = appliance_length
         self.mains_length = mains_length
-        self.meter1 = GeneratorB(self.mains_length, self.seq_length)
-        self.meter2 = GeneratorB(self.mains_length, self.seq_length)
-        self.meter3 = GeneratorB(self.mains_length, self.seq_length)
-        self.meter4 = GeneratorB(self.mains_length, self.seq_length)
-        self.meter5 = GeneratorB(self.mains_length, self.seq_length)
-
-        self.rec= Generator_rec(self.mains_length, self.seq_length)
+        # Create a dynamic list of meters
+        self.meters = nn.ModuleList([GeneratorB(self.mains_length, self.seq_length) for _ in range(num_meters)])
+        # Recurrent or another form of collective processing unit
+        self.rec = Generator_rec(self.mains_length, self.seq_length,num_meters)
 
     def forward(self, x):
+        # Process input through each meter
+        meter_outputs = [meter(x) for meter in self.meters]
+        # Assuming Generator_rec expects inputs in a specific format, e.g., each as (-1,1,35)
+        rec_input = [output.view(-1, 1, 35) for output in meter_outputs]
+        rec_output = self.rec(*rec_input)
 
-
-        meter1 = self.meter1(x)
-        meter2= self.meter2(x)
-        meter3 = self.meter3(x)
-        meter4 = self.meter4(x)
-        meter5 = self.meter5(x)
-
-        rec=self.rec( meter1.view(-1,1, 35), meter2.view(-1,1,  35), meter3.view(-1,1, 35), meter4.view(-1,1,35), meter5.view(-1,1, 35))
-
-        return  meter1,meter2,meter3,meter4,meter5,rec
+        return (*meter_outputs, rec_output)
 
 # the structure of the individual Generator
 class GeneratorB(nn.Module):
@@ -111,7 +101,7 @@ class GeneratorB(nn.Module):
 # the structure of the Generator_rec
 
 class Generator_rec(nn.Module):
-    def __init__(self, mains_length, appliance_length):
+    def __init__(self, mains_length, appliance_length,num_meters):
         # Refer to "ZHANG C, ZHONG M, WANG Z, et al. Sequence-to-point learning with neural networks for non-intrusive load monitoring[C].The 32nd AAAI Conference on Artificial Intelligence"
         super(Generator_rec, self).__init__()
         self.seq_length = appliance_length
@@ -120,7 +110,7 @@ class Generator_rec(nn.Module):
 
         self.conv = nn.Sequential(
             nn.ConstantPad1d((4, 4), 0),
-            nn.Conv1d(5, 30, 9, stride=1),
+            nn.Conv1d(num_meters, 30, 9, stride=1),
             nn.ReLU(True),
             nn.ConstantPad1d((3, 3), 0),
             nn.Conv1d(30, 40, 7, stride=1),
@@ -136,8 +126,8 @@ class Generator_rec(nn.Module):
             nn.ReLU(True),
             nn.Linear( 5* self.meter_num, 1))
 
-    def forward(self, x1, x2, x3, x4,x5, ):
-        x = torch.cat((x1, x2, x3, x4,x5), dim=1)
+    def forward(self, *rec_input ):
+        x = torch.cat((rec_input), dim=1)
         x = self.conv(x)
         x = self.dense(x.view(-1,50*   self.meter_num))
 
@@ -148,17 +138,17 @@ class Generator_rec(nn.Module):
 directory = './closed_best' + './'
 class closedDisaggregator(Disaggregator):
 
-    def __init__(self):
+    def __init__(self,num_meters):
         '''Initialize disaggregator
         '''
         self.MODEL_NAME = "pytorch Gan"
         self.window_size = 129
         self.batchsize =64
 
-        self.gen_model2 = Generator(self.batchsize, self.window_size)
+        self.gen_model2 = Generator(self.batchsize, self.window_size,num_meters)
         self.writer = SummaryWriter(directory)
         self.n_critic=5
-        self.rec_model = Generator_rec(self.batchsize, self.window_size)
+        self.rec_model = Generator_rec(self.batchsize, self.window_size,num_meters)
 
         self.num_update_iteration=0
     def initialize(self, layer):
@@ -372,9 +362,9 @@ class closedDisaggregator(Disaggregator):
         # package the results, train_meter_means, train_meter_stds together.
 
         for i, (result, mean, std) in enumerate(zip(results, train_meter_means, train_meter_stds)):
-            power = result.to('cpu').numpy()  # 将结果从 GPU 转移至 CPU 并转换为 NumPy 数组
-            adjusted_power = self.adjust_power(power, mean, std)  # 调整功率
-            data[f'appliance{i + 1}_power'] = adjusted_power  # 存储调整后的功率
+            power = result.to('cpu').numpy()
+            adjusted_power = self.adjust_power(power, mean, std)
+            data[f'appliance{i + 1}_power'] = adjusted_power
         return data
 
 
