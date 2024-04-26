@@ -31,7 +31,7 @@ parser.add_argument('--log_interval', default=1000, type=int)  #
 parser.add_argument('--load', default=False, type=bool)  # load model
 parser.add_argument('--render_interval', default=100, type=int)  # after render_interval, the env.render() will work
 parser.add_argument('--exploration_noise', default=0.1, type=float)
-parser.add_argument('--max_episode', default=60000, type=int)  # num of games,1000000
+parser.add_argument('--max_episode', default=1000000, type=int)  # num of games,1000000
 parser.add_argument("--learning-starts", type=int, default=25e3,
                     help="timestep to start learning")
 parser.add_argument('--print_log', default=5, type=int)
@@ -75,11 +75,11 @@ if __name__ == '__main__':
     train_start, train_end = "2013-6-20", "2013-6-23" # Select training and testing date
     test_start, test_end = "2013-7-06", "2013-7-07"
     building = 2
-    key1, key2, key3, key4, key5 = 'washing machine', 'microwave', 'dish washer', 'fridge', 'kettle' # select loads
+
     window_size = args.window_size
     batch_size = args.batch_size
     meter_key1 = 'washing machine'
-    meter_keys = [key1, key2, key3, key4, key5]  # Extend this list as needed
+    meter_keys = [ 'washing machine', 'microwave', 'dish washer', 'fridge','kettle']  # select loads
 
     if args.mode=='closed_train':
         # data processing and return the normalized data
@@ -89,15 +89,15 @@ if __name__ == '__main__':
                                                                              window_size, batch_size,method='closed',sample_period=6)
         # begin training
 
-        closeddisaggregator=closedDisaggregator()
+        closeddisaggregator=closedDisaggregator(len(meter_keys))
         closeddisaggregator.train_chunk(train_main,train_appliances, epochs,learning_rate,batch_size)
-        #if args.closed_test == 'True':  # if true begin testing
-        results=closeddisaggregator.disaggregate(test_main,train_appliances)
-        processed_data =  closeddisaggregator.postprocess(results,train_meter_means, train_meter_stds) #inverse the predictions
-        file_path = closeddisaggregator.save_results(processed_data)#store the predictions
-        print(f"Results saved to {file_path}")
+        if args.closed_test == True:  # if true begin testing
+            results=closeddisaggregator.disaggregate(test_main,train_appliances)
+            processed_data =  closeddisaggregator.postprocess(results,train_meter_means, train_meter_stds) #inverse the predictions
+            file_path = closeddisaggregator.save_results(processed_data)#store the predictions,return a .csv file.
+            print(f"Results saved to {file_path}")
 
-        #file_path =  closeddisaggregator.save_results(processed_data)
+
 
 
     elif args.mode=='ddpg_train':
@@ -160,12 +160,12 @@ if __name__ == '__main__':
                 agent.save()
 
         # Testing of the ddpg model
-        if args.ddpg_test == 'True':
+        if args.ddpg_test == True:
 
             agent.load()
             st = time.time()
             train_dataset = TensorDataset(torch.from_numpy(test_main),
-                                          torch.from_numpy(test_appliances[0]).float())
+                                          torch.from_numpy(test_appliances).float())
             train_loader = tud.DataLoader(train_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
             for i, (batch_test_mains, batch_test_appliance) in enumerate(train_loader):
                 with torch.no_grad():
@@ -213,17 +213,20 @@ if __name__ == '__main__':
 
             appliance1_power = np.where(valid_predictions1 > 0, valid_predictions1, 0)
             # plot the truth and predicted values
-            plt.plot(appliance1_power)  # ，linewidth=5
-            plt.plot(test_appliance1)
-            plt.show()
+            # plt.plot(appliance1_power)  # ，linewidth=5
+            # plt.plot(test_appliance1)
+            # plt.show()
 
 
             # save the truth and predicted values
             df1 = pd.DataFrame(appliance1_power)
-            df1.to_csv(directory + 'afterpred.csv')
-            df2 = pd.DataFrame(test_appliance1)
-            df2.to_csv(directory + 'afterdata.csv')
 
+            df2 = pd.DataFrame(test_appliance1)
+
+            df_combined = pd.concat([df1, df2], axis=1)
+
+
+            df_combined.to_csv(directory + 'combined_data.csv', index=False)
 
             # calculate the RAE
             sum_samples = 0.0
